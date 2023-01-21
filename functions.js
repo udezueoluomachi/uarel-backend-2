@@ -49,7 +49,7 @@ export const pushToGithub = (path,callback) => {
    let cloneCmd = ` git clone ${repoUrl}.git`;
    let navToClone = " cd uarel";
    let setOrigin = ` git remote add base ${repoUrl}.git && git remote set-url --push base https://udezueoluomachi:${_env.GITHUB_P_ACCESS_TOKEN}@github.com/udezueoluomachi/uarel.git `;
-   let pushCmd = ` git add . && git commit -m ": Api" && git push base main`;
+   let pushCmd = ` dir && git add . && git commit -m ": Api" && git push base main`;
 
    exec(cloneCmd, (err, stdout, stderr) => {
         if(err) throw err;
