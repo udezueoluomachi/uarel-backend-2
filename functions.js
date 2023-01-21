@@ -1,6 +1,8 @@
 import {config} from "dotenv";
 import fs from "fs";
 import {exec} from "child_process";
+import rimraf from "rimraf";
+import {join} from "path";
 config();
 
 const _env = process.env;
@@ -44,41 +46,30 @@ const moveFile = (path, callback) => {
     })
 }
 
+const run = (cmd, callback) => {
+    exec(cmd, (err, stdout, stderr) => {
+        if(err) throw err;
+        console.log("stdout : %s\nstderr : %s", stdout, stderr);
+        callback();
+    })
+}
+
 export const pushToGithub = (path,callback) => {
    let repoUrl = "https://github.com/udezueoluomachi/uarel"
    let cloneCmd = ` git clone ${repoUrl}.git`;
-   let setOrigin = ` git remote add base ${repoUrl}.git && git remote set-url --push base https://udezueoluomachi:${_env.GITHUB_P_ACCESS_TOKEN}@github.com/udezueoluomachi/uarel.git `;
-   let pushCmd = ` git add ./uarel && git commit -m ": Api" && git push base main && git remote remove base`;
+   let gitC = "git -C ./uarel";
+   let setOrigin = ` ${gitC} remote set-url --push origin https://udezueoluomachi:${_env.GITHUB_P_ACCESS_TOKEN}@github.com/udezueoluomachi/uarel.git `;
+   let pushCmd = ` ${gitC} add . && ${gitC} commit -m ": Api" && ${gitC} push origin main`;
 
-   exec(cloneCmd, (err, stdout, stderr) => {
-        if(err) throw err;
-        console.log(stdout);
-        console.log(stderr);
-        moveFile(path, () => {
-            exec(navToClone, (err, stdout, stderr) => {
+   run(cloneCmd, () => {
+    moveFile(path, () => {
+        run(`${setOrigin} && ${pushCmd}`, () => {
+            rimraf("./uarel",{})
+            .then( err => {
                 if(err) throw err;
-                console.log(stdout);
-                console.log(stderr);
-                exec(setOrigin, (err, stdout, stderr) => {
-                    if(err) throw err;
-                    console.log(stdout);
-                    console.log(stderr);
-                    exec(pushCmd, (err, stdout, stderr) => {
-                        if(err) throw err;
-                        console.log(stdout);
-                        console.log(stderr);
-                        exec(" cd ..", (err, stdout, stderr) => {
-                            if(err) throw err;
-                            console.log(stdout);
-                            console.log(stderr);
-                            fs.rmdir("./uarel", (err) => {
-                                if(err) throw err;
-                                callback();
-                            })
-                        })
-                    })
-                })
+                callback();
             })
         })
+    })
    })
-}
+};
