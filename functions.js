@@ -45,22 +45,40 @@ const moveFile = (path, callback) => {
 }
 
 export const pushToGithub = (path,callback) => {
-    //commit : mesage => : Api
-    //delit file and run call back after pushing to github
-   // deleteFile(path);
-   // callback();
    let repoUrl = "https://github.com/udezueoluomachi/uarel"
-   let cloneCmd = ` git clone ${repoUrl}`;
+   let cloneCmd = ` git clone ${repoUrl}.git`;
    let navToClone = " cd uarel";
-   let pushCmd = ` git add . & git commit -m ": Api" & git push origin main`;
+   let setOrigin = ` git remote add base ${repoUrl}.git && git remote set-url --push base https://udezueoluomachi:${_env.GITHUB_P_ACCESS_TOKEN}@github.com/udezueoluomachi/uarel.git `;
+   let pushCmd = ` git add . && git commit -m ": Api" && git push base main`;
 
    exec(cloneCmd, (err, stdout, stderr) => {
         if(err) throw err;
         console.log(stdout);
+        console.log(stderr);
         moveFile(path, () => {
             exec(navToClone, (err, stdout, stderr) => {
                 if(err) throw err;
                 console.log(stdout);
+                console.log(stderr);
+                exec(setOrigin, (err, stdout, stderr) => {
+                    if(err) throw err;
+                    console.log(stdout);
+                    console.log(stderr);
+                    exec(pushCmd, (err, stdout, stderr) => {
+                        if(err) throw err;
+                        console.log(stdout);
+                        console.log(stderr);
+                        exec(" cd ..", (err, stdout, stderr) => {
+                            if(err) throw err;
+                            console.log(stdout);
+                            console.log(stderr);
+                            fs.rmdir("./uarel", (err) => {
+                                if(err) throw err;
+                                callback();
+                            })
+                        })
+                    })
+                })
             })
         })
    })
