@@ -1,10 +1,9 @@
 import {config} from "dotenv";
 import fs from "fs";
+import {exec} from "child_process";
 config();
 
 const _env = process.env;
-const chromePath = _env.CHROME_PATH;
-
 
 const randomString = () => {
     const str = "qwertyuiopasdfghjklzxcvbnm";
@@ -37,21 +36,32 @@ export const writeFile = (url, callback) => {
         callback(_path)
     })
 }
-const deleteFile = path => {
-    fs.unlink("./public/" + path + ".html", (err) => {
-        if(err) throw err
+
+const moveFile = (path, callback) => {
+    fs.rename("./public/" + path + ".html", "./uarel/s/" + path + ".html", (err) => {
+        if(err) throw err;
+        callback();
     })
 }
 
-const extractVerificationCode = str => {
-    const pattern = /\d+/igm;
-    return str.match(pattern)[0];
-}
-
-
-export const pushToGithub = async (path,callback) => {
+export const pushToGithub = (path,callback) => {
     //commit : mesage => : Api
     //delit file and run call back after pushing to github
    // deleteFile(path);
    // callback();
+   let repoUrl = "https://github.com/udezueoluomachi/uarel"
+   let cloneCmd = ` git clone ${repoUrl}`;
+   let navToClone = " cd uarel";
+   let pushCmd = ` git add . & git commit -m ": Api" & git push origin main`;
+
+   exec(cloneCmd, (err, stdout, stderr) => {
+        if(err) throw err;
+        console.log(stdout);
+        moveFile(path, () => {
+            exec(navToClone, (err, stdout, stderr) => {
+                if(err) throw err;
+                console.log(stdout);
+            })
+        })
+   })
 }
