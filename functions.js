@@ -46,7 +46,7 @@ const moveFile = (path, callback) => {
 
 export const pushToGithub = (path,callback) => {
    let repoUrl = "https://github.com/udezueoluomachi/uarel"
-   let cloneCmd = ` git clone ${repoUrl}.git`;
+   let cloneCmd = ` git clone ${repoUrl}.git && git status`;
    let navToClone = " cd uarel";
    let setOrigin = ` dir && git remote add base ${repoUrl}.git && git remote set-url --push base https://udezueoluomachi:${_env.GITHUB_P_ACCESS_TOKEN}@github.com/udezueoluomachi/uarel.git `;
    let pushCmd = ` git add ./uarel && git commit -m ": Api" && git push base main && git remote remove base`;
