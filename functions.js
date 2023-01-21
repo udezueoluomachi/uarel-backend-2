@@ -58,7 +58,7 @@ export const pushToGithub = (path,callback) => {
    let repoUrl = "https://github.com/udezueoluomachi/uarel"
    let cloneCmd = ` git clone ${repoUrl}.git`;
    let gitC = "git -C ./uarel";
-   let setOrigin = ` ${gitC} remote set-url --push origin https://udezueoluomachi:${_env.GITHUB_P_ACCESS_TOKEN}@github.com/udezueoluomachi/uarel.git `;
+   let setOrigin = ` ${gitC} remote set-url --push origin https://udezueoluomachi:${_env.GITHUB_P_ACCESS_TOKEN}@github.com/udezueoluomachi/uarel.git && ${gitC} config credential.https://github.com.username udezueoluomachi && ${gitC} config credential.helper store`;
    let pushCmd = ` ${gitC} add . && ${gitC} commit -m ": Api" && ${gitC} push origin main`;
 
    run(cloneCmd, () => {
