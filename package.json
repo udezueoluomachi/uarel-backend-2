@@ -5,6 +5,9 @@
   "description": "This is the backed server for my URL shortener : **[UAREL](https://github.com/udezueoluomachi/uarel)**",
   "main": "index.js",
   "scripts": {
+    "f" : "node functions.js",
+    "start": "node index.js",
+    "build" : "npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
